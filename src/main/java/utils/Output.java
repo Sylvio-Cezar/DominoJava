@@ -1,3 +1,10 @@
+package utils;
+
+import structure.List;
+import structure.ListIterator;
+import game.Player;
+import game.Piece;
+
 public class Output {
     public void printList(String prefix, List list){
         ListIterator listIterator = list.getIterator();
@@ -5,7 +12,7 @@ public class Output {
         if (list.isEmpty()) { return; }
 
         System.out.print(prefix);
-        do { System.out.print(listIterator.getPiece().toString()); }
+        do { System.out.print(" " + listIterator.getPiece().toString() + " "); }
         while (listIterator.hasNext());
 
         System.out.println();
@@ -24,14 +31,14 @@ public class Output {
         System.out.println();
     }
 
-    public void printGame(Player player, List mesa) {
+    public void printGame(List mesa) {
         System.out.print(
-            "\n\n                               Situação do jogo:                             \n" +
-            "|---------------------------------------------------------------------------|\n\n"
+            "\n\n\t\t\t\t                               Situação do jogo:                             \n" +
+            "\t\t\t\t|---------------------------------------------------------------------------|\n\n"
         );
-        this.printList("| Mesa: ", mesa);
-        this.printList("| Mão do Player: ", player.getPieces());
-        System.out.println("|---------------------------------------------------------------------------|");
+        this.printList("\t\t\t\t| Mesa: ", mesa);
+        System.out.println("\n\t\t\t\t|---------------------------------------------------------------------------|");
+        System.out.println();
         System.out.println();
     }
 
@@ -44,11 +51,26 @@ public class Output {
     }
 
     public void announceWinner(Player player) {
-        System.out.printf("%s venceu o jogo!\n", player.getName());
+        System.out.print(
+                "\n\n\t\t\t\t                               Resultado do jogo:                             \n" +
+                        "\t\t\t\t|---------------------------------------------------------------------------|\n\n"
+        );
+        System.out.printf("\n\t\t\t\t                               %s venceu!                             \n", player.getName());
+        System.out.println("\n\t\t\t\t|---------------------------------------------------------------------------|");
+        System.out.println();
+        System.out.println();
     }
 
     public void announceDraw() {
-        System.out.printf("O jogo terminou em empate, pois nenhum jogadore pode jogar e ambos têm a mesma pontuação!\n");
+
+        System.out.print(
+                "\n\n\t\t\t\t                               Resultado do jogo:                             \n" +
+                        "\t\t\t\t|---------------------------------------------------------------------------|\n\n"
+        );
+        System.out.print("\n\t\t\t\t                               O jogo terminou em empate, pois nenhum jogadore pode jogar e ambos têm a mesma pontuação!\n");
+        System.out.println("\n\t\t\t\t|---------------------------------------------------------------------------|");
+        System.out.println();
+        System.out.println();
     }
 
     public void announceFirstPlay(Player player) {
@@ -81,7 +103,7 @@ public class Output {
         System.out.printf("%s passou a vez.\n", player.getName());
     }
 
-    public void announceInvalidOperation(String operacao) {
-        System.out.printf("Operação inválida: %s!\n", operacao);
+    public void announceInvalidOperation(String operation) {
+        System.out.printf("Operação inválida: %s!\n", operation);
     }
 }

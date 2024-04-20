@@ -1,3 +1,7 @@
+package structure;
+
+import game.Piece;
+
 public class ListIterator {
     private Node currentNode;
     private Node nextNode;

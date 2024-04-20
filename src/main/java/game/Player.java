@@ -1,3 +1,5 @@
+package game;
+import structure.List;
 public class Player {
 	private String name;
     private List pieces;

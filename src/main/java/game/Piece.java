@@ -1,3 +1,7 @@
+package game;
+
+import utils.Colors;
+
 public class Piece {
 	private int firstValue;
     private int secondValue;

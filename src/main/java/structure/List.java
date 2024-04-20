@@ -1,3 +1,7 @@
+package structure;
+
+import game.Piece;
+
 public class List {
 	Node start;
     Node end;

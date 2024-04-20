@@ -1,3 +1,7 @@
+package structure;
+
+import game.Piece;
+
 public class Node {
 	private Piece piece;
     Node previous;

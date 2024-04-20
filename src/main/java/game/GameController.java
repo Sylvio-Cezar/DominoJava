@@ -1,13 +1,20 @@
+package game;
+
+import utils.Colors;
+import utils.Input;
+import utils.Output;
+import structure.List;
+import structure.ListIterator;
 import java.util.Random;
 
 public class GameController {
-    private Player player;
-    private Player computer;
+    private final Player player;
+    private final Player computer;
+    private final List table;
+    private final Output output;
+    private final Input input;
     private Player turnPlayer;
-    private List table;
     private List mount;
-    private Output output;
-    private Input input;
 
     public GameController(int highestPiece) {
         this.player = new Player("Player");
@@ -21,21 +28,21 @@ public class GameController {
         this.spreadPieces();
     }
 
-    private void createMount(int limit){
+    private void createMount(int limit) {
         this.mount = new List();
 
-        for(int i = 0; i <= limit; i++) {
-            for(int j = i; j <= limit; j++) {
+        for (int i = 0; i <= limit; i++) {
+            for (int j = i; j <= limit; j++) {
                 mount.insert(new Piece(i, j));
             }
         }
     }
 
-    private void spreadPieces(){
+    private void spreadPieces() {
         int initialQtt = Math.floorDiv(this.mount.getlistLength(), 4);
 
         Piece piece;
-        for (int i = 0; i < initialQtt; i++){
+        for (int i = 0; i < initialQtt; i++) {
             piece = mount.remove(getRandomInteger(1, mount.getlistLength()));
             piece.setColor(Colors.ANSI_PURPLE);
             player.getPieces().insert(piece);
@@ -53,17 +60,18 @@ public class GameController {
 
     private void startMatch() {
         boolean isPlaying = true;
-        do{
-            output.printGame(this.player, this.table);
+        do {
+            output.printGame(this.table);
             this.changeTurnPlayer();
 
-            if (this.turnPlayer.equals(this.player)){
+            if (this.turnPlayer.equals(this.player)) {
                 this.doPlayerTurn();
             } else {
                 this.doComputerTurn();
             }
 
             if (this.turnPlayer.getPieces().getlistLength() == 0) {
+                output.printGame(this.table);
                 output.announceWinner(this.turnPlayer);
                 isPlaying = false;
             }
@@ -76,9 +84,10 @@ public class GameController {
                     PiecePoints computerPoints = this.getPiecePoints(this.computer.getPieces());
 
                     if (playerPoints.sumTotalValues == computerPoints.sumTotalValues) {
+                        output.printGame(this.table);
                         output.announceDraw();
                     } else {
-                        // Vençe o player com a menor pontuação somando os valores de todas as peças
+                        output.printGame(this.table);
                         output.announceWinner(computerPoints.sumTotalValues > playerPoints.sumTotalValues ? this.player : this.computer);
                     }
 
@@ -86,49 +95,14 @@ public class GameController {
                 }
             }
 
-        } while(isPlaying);
+        } while (isPlaying);
     }
-
-    /* private void doComputerTurn() {
-        do {
-            List playablePositions = this.getPlayablePiecesPositions(this.turnPlayer);
-            if (playablePositions.isEmpty()){
-                if (getRandomInteger(1, 2) != 1){
-                    output.announcePassTurn(this.turnPlayer);
-                    break;
-                }
-
-                try {
-                    this.buyPiece(this.turnPlayer);
-                    continue;
-                } catch (UnsupportedOperationException e) {
-                    output.announcePassTurn(this.turnPlayer);
-                    break;
-                }
-            }
-
-            List pieces = this.turnPlayer.getPieces();
-            Piece pieceToRemove = playablePositions.remove();
-            int piecePosition = 1;
-            ListIterator iterator = pieces.getIterator();
-            while (iterator.hasNext()) {
-                Piece piece = iterator.next();
-                if (piece.equals(pieceToRemove)) {
-                    break;
-                }
-                piecePosition++;
-            }
-            playPiece(this.turnPlayer, piecePosition);
-
-            break;
-        } while (true);
-    } */
 
     private void doComputerTurn() {
         do {
             List playablePositions = this.getPlayablePiecesPositions(this.turnPlayer);
-            if (playablePositions.isEmpty()){
-                if (getRandomInteger(1, 2)!= 1){
+            if (playablePositions.isEmpty()) {
+                if (getRandomInteger(1, 2) != 1) {
                     output.announcePassTurn(this.turnPlayer);
                     break;
                 }
@@ -162,18 +136,18 @@ public class GameController {
     private void doPlayerTurn() {
         do {
             List playablePositions = this.getPlayablePiecesPositions(this.turnPlayer);
-            if (playablePositions.isEmpty()){
+            if (playablePositions.isEmpty()) {
                 output.askAction_NoPlayablePieces();
                 int selectedAction = -1;
                 try {
                     selectedAction = input.getInteger();
-                    if (selectedAction == 2){
+                    if (selectedAction == 2) {
                         output.announcePassTurn(this.turnPlayer);
                         break;
                     } else if (selectedAction == 1) {
                         try {
                             this.buyPiece(this.turnPlayer);
-                            output.printGame(this.player, this.table);
+                            output.printGame(this.table);
                             continue;
                         } catch (UnsupportedOperationException e) {
                             output.announcePassTurn(this.turnPlayer);
@@ -183,13 +157,11 @@ public class GameController {
                         output.announceInvalidOperation("Valor não corresponde a uma ação disponível");
                         continue;
                     }
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     output.announceInvalidOperation("valor digitado não é um número");
                     continue;
                 }
             }
-            output.printList("Peças na Mesa: ", this.table);
             output.printList_WithNodePositions("Mão do Player: ", this.turnPlayer.getPieces());
             output.askPieceChoice();
             try {
@@ -199,7 +171,7 @@ public class GameController {
                 continue;
             }
             break;
-        } while(true);
+        } while (true);
     }
 
     private void doFirstMove() {
@@ -209,7 +181,7 @@ public class GameController {
         playPiece(this.turnPlayer, (piecePoints.highestPair != -1) ? piecePoints.HighestPairPosition : piecePoints.HighestValuePosition);
     }
 
-    private void changeTurnPlayer(){
+    private void changeTurnPlayer() {
         this.turnPlayer = (turnPlayer.equals(this.player)) ? this.computer : this.player;
         output.announcePlayerTurn(this.turnPlayer);
     }
@@ -230,22 +202,6 @@ public class GameController {
         }
     }
 
-    private class PiecePoints {
-        int highestPair;
-        int highestValue;
-        int HighestPairPosition;
-        int HighestValuePosition;
-        int sumTotalValues;
-
-        public PiecePoints(int highestPair, int highestValue, int HighestPairPosition, int HighestValuePosition, int somaValoresTotal) {
-            this.highestPair = highestPair;
-            this.highestValue = highestValue;
-            this.HighestPairPosition = HighestPairPosition;
-            this.HighestValuePosition = HighestValuePosition;
-            this.sumTotalValues = somaValoresTotal;
-        }
-    }
-
     private PiecePoints getPiecePoints(List list) {
         int highestPair = -1;
         int highestValue = -1;
@@ -261,67 +217,59 @@ public class GameController {
             int firstValue = piece.getFirstValue();
             int secondValue = piece.getSecondValue();
 
-            if (firstValue == secondValue && firstValue > highestPair){
+            if (firstValue == secondValue && firstValue > highestPair) {
                 highestPair = firstValue;
                 HighestPairPosition = pos;
             }
 
             int pieceValue = firstValue + secondValue;
-            if (pieceValue > highestValue){
+            if (pieceValue > highestValue) {
                 highestValue = pieceValue;
                 HighestValuePosition = pos;
             }
 
             sumTotalValues += pieceValue;
-
             pos++;
+
         } while (listIterator.hasNext());
 
         return new PiecePoints(highestPair, highestValue, HighestPairPosition, HighestValuePosition, sumTotalValues);
     }
 
-    private void playPiece(Player player, int piecePosition) throws IllegalArgumentException{
-
-
-
+    private void playPiece(Player player, int piecePosition) throws IllegalArgumentException {
         List playerPieces = player.getPieces();
-
 
         if (piecePosition < 1 || piecePosition > playerPieces.getlistLength()) {
             throw new IllegalArgumentException("Posição da peça inválida.");
         }
 
-
         Piece playedPiece = playerPieces.remove(piecePosition);
 
-
-
-        if (table.isEmpty()){
+        if (table.isEmpty()) {
             this.table.insert(playedPiece);
             this.output.announcePlay(player, playedPiece);
-        } else { // avaliar jogada
+        } else {
             int firstTip = table.getStart().getFirstValue();
             int secondTip = table.getEnd().getSecondValue();
 
             int playedPiece_FirstValue = playedPiece.getFirstValue();
             int playedPiece_SecondValue = playedPiece.getSecondValue();
 
-            boolean canPlayOnFirstTip = playedPiece_FirstValue == firstTip
-                    || playedPiece_SecondValue == firstTip;
-            boolean canPlayOnSecondTip = playedPiece_FirstValue == secondTip
-                    || playedPiece_SecondValue == secondTip;
+            boolean canPlayOnFirstTip = playedPiece_FirstValue == firstTip || playedPiece_SecondValue == firstTip;
+            boolean canPlayOnSecondTip = playedPiece_FirstValue == secondTip || playedPiece_SecondValue == secondTip;
 
             boolean choseFirst = true;
             if (canPlayOnFirstTip && canPlayOnSecondTip) {
-                if (this.turnPlayer.equals(this.player)){
+                if (this.turnPlayer.equals(this.player)) {
                     int selectedAction = -1;
-                    do{
+                    do {
                         output.askTipChoice();
                         try {
                             selectedAction = input.getInteger();
                             choseFirst = selectedAction == 1;
+                        } catch (NumberFormatException e) {
+                            output.announceInvalidOperation("Valor digitado não é um número");
                         }
-                        catch (NumberFormatException e) { output.announceInvalidOperation("Valor digitado não é um número"); }
                     } while (selectedAction != 1 && selectedAction != 2);
                 } else {
                     choseFirst = getRandomInteger(1, 2) == 1;
@@ -348,7 +296,7 @@ public class GameController {
     }
 
     private void buyPiece(Player player) throws UnsupportedOperationException {
-        if (this.mount.isEmpty()){
+        if (this.mount.isEmpty()) {
             throw new UnsupportedOperationException("Monte está vazio.");
         }
 
@@ -378,9 +326,22 @@ public class GameController {
                 playablePositions.insert(piece);
             }
         }
-
         return playablePositions;
     }
 
+    private class PiecePoints {
+        int highestPair;
+        int highestValue;
+        int HighestPairPosition;
+        int HighestValuePosition;
+        int sumTotalValues;
 
+        public PiecePoints(int highestPair, int highestValue, int HighestPairPosition, int HighestValuePosition, int somaValoresTotal) {
+            this.highestPair = highestPair;
+            this.highestValue = highestValue;
+            this.HighestPairPosition = HighestPairPosition;
+            this.HighestValuePosition = HighestValuePosition;
+            this.sumTotalValues = somaValoresTotal;
+        }
+    }
 }
