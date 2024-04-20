@@ -1,5 +1,10 @@
 # Jogo de Dominó em Java
 
+### Integrantes:
+* Alysson José
+* Anderson Richard
+* Sylvio Cézar
+
 ## StartApp
 ##### A classe *StartApp* é usada para iniciar o jogo. Ela contém um método main que é o ponto de entrada para o programa, e um método startGame que inicia o jogo.
 ## Player
