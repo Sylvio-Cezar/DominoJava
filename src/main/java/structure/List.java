@@ -1,3 +1,7 @@
+package structure;
+
+import game.Piece;
+
 public class List {
 	Node start;
     Node end;
@@ -74,7 +78,7 @@ public class List {
         this.listLength++;
     }
 
-    public Piece remover() {
+    public Piece remove() {
         if (this.isEmpty()){
             return null;
         }
@@ -89,7 +93,7 @@ public class List {
         return removedNode.getPiece();
     }
 
-    public Piece remover(int position) throws IllegalArgumentException {
+    public Piece remove(int position) throws IllegalArgumentException {
         if (position < 1 || position > this.listLength){
             throw new IllegalArgumentException("Valor fora do permitido");
         }
