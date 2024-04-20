@@ -26,9 +26,8 @@ public class Output {
 
     public void printGame(Player player, List mesa) {
         System.out.print(
-            "|---------------------------------------------------------------------------|\n" +
-            "|                              Situação do jogo:                            |\n" +
-            "|---------------------------------------------------------------------------|\n"
+            "\n\n                               Situação do jogo:                             \n" +
+            "|---------------------------------------------------------------------------|\n\n"
         );
         this.printList("| Mesa: ", mesa);
         this.printList("| Mão do Player: ", player.getPieces());

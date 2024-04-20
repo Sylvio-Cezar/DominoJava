@@ -37,11 +37,11 @@ public class GameController {
         Piece piece;
         for (int i = 0; i < initialQtt; i++){
             piece = mount.remove(getRandomInteger(1, mount.getlistLength()));
-            piece.setColor(Colors.ANSI_CYAN);
+            piece.setColor(Colors.ANSI_PURPLE);
             player.getPieces().insert(piece);
 
             piece = mount.remove(getRandomInteger(1, mount.getlistLength()));
-            piece.setColor(Colors.ANSI_YELLOW);
+            piece.setColor(Colors.ANSI_BLUE);
             computer.getPieces().insert(piece);
         }
     }
@@ -281,7 +281,21 @@ public class GameController {
     }
 
     private void playPiece(Player player, int piecePosition) throws IllegalArgumentException{
-        Piece playedPiece = player.getPieces().remove(piecePosition);
+
+
+
+        List playerPieces = player.getPieces();
+
+
+        if (piecePosition < 1 || piecePosition > playerPieces.getlistLength()) {
+            throw new IllegalArgumentException("Posição da peça inválida.");
+        }
+
+
+        Piece playedPiece = playerPieces.remove(piecePosition);
+
+
+
         if (table.isEmpty()){
             this.table.insert(playedPiece);
             this.output.announcePlay(player, playedPiece);
@@ -339,7 +353,7 @@ public class GameController {
         }
 
         Piece buyedPiece = this.mount.remove(this.getRandomInteger(1, this.mount.getlistLength()));
-        buyedPiece.setColor(player.equals(this.player) ? Colors.ANSI_CYAN : Colors.ANSI_YELLOW);
+        buyedPiece.setColor(player.equals(this.player) ? Colors.ANSI_PURPLE : Colors.ANSI_BLUE);
         player.getPieces().insert(buyedPiece);
         this.output.announceBuy(player);
     }
@@ -350,28 +364,23 @@ public class GameController {
         int firstTip = table.getStart().getFirstValue();
         int secondTip = table.getEnd().getSecondValue();
 
-        int pos = 1;
         ListIterator listIterator = player.getPieces().getIterator();
 
-        do {
+        while (listIterator.hasNext()) {
             Piece piece = listIterator.getPiece();
             int firstValue = piece.getFirstValue();
             int secondValue = piece.getSecondValue();
 
-            boolean canPlayOnFirstTip = firstValue == firstTip
-                    || secondValue == firstTip;
-            boolean canPlayOnSecondTip = firstValue == secondTip
-                    || secondValue == secondTip;
+            boolean canPlayOnFirstTip = firstValue == firstTip || secondValue == firstTip;
+            boolean canPlayOnSecondTip = firstValue == secondTip || secondValue == secondTip;
 
             if (canPlayOnFirstTip || canPlayOnSecondTip) {
-                // playablePositions.insert(pos);
-                Piece newPiece = new Piece(pos, pos); // assuming pos is the value you want to insert
-                playablePositions.insert(newPiece);
+                playablePositions.insert(piece);
             }
-
-            pos++;
-        } while (listIterator.hasNext());
+        }
 
         return playablePositions;
     }
+
+
 }

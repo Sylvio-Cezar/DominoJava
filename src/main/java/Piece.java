@@ -6,7 +6,7 @@ public class Piece {
     public Piece(int firstValue, int secondValue) {
         this.firstValue = firstValue;
         this.secondValue = secondValue;
-        this.color = Colors.ANSI_RESET;
+        this.color = Colors.ANSI_RED;
     }
 
     public int getFirstValue() {
